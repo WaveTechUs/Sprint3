@@ -104,21 +104,6 @@ private static DAO dao = new DAO();
 		}
 	}
 
-	private void apagarEstado() {
-		try {
-			String uf = showInputDialog("UF do estado");
-			stringVazia(uf);
-			if (dao.apagarEstado(uf)) {
-				showMessageDialog(null, "Estado apagado com sucesso");
-			} else {
-				showMessageDialog(null, "Estado ocorreu um erro ao apagar o estado");
-			}
-		} catch (NumberFormatException e) {
-			showMessageDialog(null, "Opção inválida");
-			return;
-		}
-	}
-
 	private void cadastrarCidade() {
 		try {
 			String nome = showInputDialog("Nome da cidade");
@@ -138,37 +123,41 @@ private static DAO dao = new DAO();
 	}
 
 	private void pesquisarCidade() {
-		long cnpj = parseInt(showInputDialog("CNPJ"));
-
+		String cidade = showInputDialog("Nome da cidade");
+		String retornoPesquisa = dao.pesquisarCidade(cidade);
+		showMessageDialog(null, retornoPesquisa);
 	}
 
 	private void alterarCidade() {
-		long cnpj = parseInt(showInputDialog("CNPJ a ser alterado (Sem pontuação)"));
-		String nomeNovo = showInputDialog("Nome");
-		stringVazia(nomeNovo);
-		long cnpjNovo = parseInt(showInputDialog("CNPJ (Sem pontuação)"));
-		String senhaNova = showInputDialog("Senha");
-		stringVazia(senhaNova);
-		String enderecoNovo = showInputDialog("Endereco");
-		stringVazia(enderecoNovo);
-		String descricaoNovo = showInputDialog("Descrição dos alimentos");
-		stringVazia(descricaoNovo);
-		double pesoNovo = Double.parseDouble(showInputDialog("Peso(kg) dos alimentos"));
-		int statusRetirada = parseInt(showInputDialog("Retirada disponível? (1) Sim  - (2) Não"));
-		boolean statusRetiradaBoolNovo;
-
-		if (statusRetirada == 1) {
-			statusRetiradaBoolNovo = true;
-		} else if (statusRetirada == 2) {
-			statusRetiradaBoolNovo = false;
-		} else {
-			throw new NumberFormatException("Opção inválida");
+		try {
+			String nome = showInputDialog("Nome da cidade");
+			String novoNome = showInputDialog("Novo nome da cidae");
+			stringVazia(novoNome);
+			stringVazia(nome);
+			if (dao.alterarCidade(nome, novoNome)) {
+				showMessageDialog(null, "Cidade alterada com sucesso");
+			} else {
+				showMessageDialog(null, "Ocorreu um erro ao alterar a cidade");
+			}
+		} catch (NumberFormatException e) {
+			showMessageDialog(null, "Opção inválida");
+			return;
 		}
-
 	}
 
 	private void apagarCidade() {
-		long cnpj = parseInt(showInputDialog("CNPJ (Sem pontuação)"));
+		try {
+			String nome = showInputDialog("Nome da cidade");
+			stringVazia(nome);
+			if (dao.apagarCidade(nome)) {
+				showMessageDialog(null, "Cidade apagada com sucesso");
+			} else {
+				showMessageDialog(null, "Ocorreu um erro ao apagar a cidade");
+			}
+		} catch (NumberFormatException e) {
+			showMessageDialog(null, "Opção inválida");
+			return;
+		}
 	}
 
 	private void stringVazia(String input) {
@@ -181,12 +170,11 @@ private static DAO dao = new DAO();
 		aux += "1. Cadastrar estado\n";
 		aux += "2. Pesquisar estado\n";
 		aux += "3. Alterar estado\n";
-		aux += "4. Apagar estado\n";
-		aux += "5. Cadastrar cidade\n";
-		aux += "6. Pesquisar cidade\n";
-		aux += "7. Alterar cidade\n";
-		aux += "8. Apagar cidade\n";
-		aux += "9. Encerrar programa\n";
+		aux += "4. Cadastrar cidade\n";
+		aux += "5. Pesquisar cidade\n";
+		aux += "6. Alterar cidade\n";
+		aux += "7. Apagar cidade\n";
+		aux += "8. Encerrar programa\n";
 		return aux;
 	}
 }

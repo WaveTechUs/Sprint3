@@ -94,31 +94,97 @@ public class DAO {
 		}
 		return retorno;
 	}
+
+    public boolean adicionarCidade(Cidade cidade){
+        boolean retorno = false;
+        
+        String temEstado = pesquisarEstado(cidade.getFk_estado());
+        if(temEstado.length() == 36) {
+        	return false;
+        }
+
+        Connection conexao = db.conectar();
+        
+        try {
+        	String sql = "INSERT INTO CIDADE (NOME_CIDADE, UF) VALUES (?, ?)";
+        	PreparedStatement pCidade = conexao.prepareStatement(sql);
+        	pCidade.setString(1, cidade.getNome_cidade());
+        	pCidade.setString(2, cidade.getFk_estado());
+        	int i = pCidade.executeUpdate();
+        	if (i > 0) {
+        		retorno = true;
+        	}
+        } catch (Exception ex){
+        	System.out.println("Erro no adicionar cidade");
+        } finally {
+            db.close();
+        }    
+        return retorno;
+    }    	
 	
-	public boolean adicionarCidade(Cidade cidade){
-		boolean retorno = false;
-		String sqlIdEstado = "SELECT ID_ESTADO FROM ESTADO WHERE UF = ?";
+	public String pesquisarCidade(String nomeCidade) {
+		String retorno = "Nenhuma cidade com esse nome registrado";
+		String sql = "SELECT * FROM CIDADE WHERE NOME_CIDADE = ? ";
 		Connection conexao = db.conectar();
 		try {
-			PreparedStatement p = conexao.prepareStatement(sqlIdEstado);
-			p.setString(1, cidade.getFk_estado());
+			PreparedStatement p = conexao.prepareStatement(sql);
+			p.setString(1, nomeCidade);
 			ResultSet rs = p.executeQuery();
-			int idEstado = 0;
+			String nomeCidadeRetorno = "";
+			String ufRetorno = "";
 			while(rs.next()) {
-				idEstado = rs.getInt("ID_ESTADO");
+				nomeCidadeRetorno = rs.getString("NOME_CIDADE");
+				ufRetorno = rs.getString("UF");
+			}		
+			if(nomeCidadeRetorno.length() == 0 || ufRetorno.length() == 0){
+				retorno = "Nenhuma cidade com esse nome registrado";
+			} else {
+				retorno = nomeCidadeRetorno + "\n";
+				retorno += ufRetorno + "\n";
 			}
-			String sql = "INSERT INTO CIDADE VALUES (?,?)";
-			p = conexao.prepareStatement(sql);
-			p.setString(1, cidade.getNome_cidade());
-			p.setInt(2, idEstado);
+		} catch (Exception ex){
+			retorno = "Ocorreu um erro";
+		} finally {
+			db.close();
+		}
+		return retorno;	
+	}
+	
+	public boolean alterarCidade(String nome, String novoNome){
+		boolean retorno = false;
+		String sql = "UPDATE CIDADE SET NOME_CIDADE = ? WHERE NOME_CIDADE = ?";
+		Connection conexao = db.conectar();
+		try {
+			PreparedStatement p = conexao.prepareStatement(sql);
+			p.setString(1, novoNome);
+			p.setString(2, nome);
+			int i = p.executeUpdate();
+			retorno = true;
+			if(i == 0) {
+				retorno = false;
+			}
+		} catch (Exception ex){
+			retorno = false;
+		} finally {
+			db.close();
+		}
+		return retorno;
+	}
+	
+	public boolean apagarCidade(String nome){
+		boolean retorno = false;
+		String sql = "DELETE FROM CIDADE WHERE NOME_CIDADE = ?";
+		Connection conexao = db.conectar();
+		try {
+			PreparedStatement p = conexao.prepareStatement(sql);
+			p.setString(1, nome);
 			int i = p.executeUpdate();
 			retorno = true;
 		} catch (Exception ex){
 			retorno = false;
 		} finally {
 			db.close();
-		}	
+		}
 		return retorno;
-	}	
-
+	}
 }
