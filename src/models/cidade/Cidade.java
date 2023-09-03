@@ -5,8 +5,7 @@ public class Cidade{
     String nome_cidade;
     String fk_estado;
 
-    public Cidade(int id_cidade, String nome_cidade, String fk_estado){
-        this.id_cidade = id_cidade;
+    public Cidade(String nome_cidade, String fk_estado){
         this.nome_cidade = nome_cidade;
         this.fk_estado = fk_estado;
     }

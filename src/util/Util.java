@@ -5,6 +5,7 @@ import static javax.swing.JOptionPane.showInputDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 import dao.DAO;
+import models.cidade.Cidade;
 import models.estado.Estado;
 
 public class Util {
@@ -43,18 +44,15 @@ private static DAO dao = new DAO();
 					alterarEstado();
 					break;
 				case 4:
-					apagarEstado();
-					break;
-				case 5:
 					cadastrarCidade();
 					break;
-				case 6:
+				case 5:
 					pesquisarCidade();
 					break;
-				case 7:
+				case 6:
 					alterarCidade();
 					break;
-				case 8:
+				case 7:
 					apagarCidade();
 					break;
 				}
@@ -70,12 +68,11 @@ private static DAO dao = new DAO();
 			stringVazia(uf);
 			
 			Estado Estado = new Estado(uf,estado);
-			dao.adicionarEstado(Estado);
-//			if (dao.adicionarEstado(Estado)) {
-//				showMessageDialog(null, "Estado registrada com sucesso");
-//			} else {
-//				showMessageDialog(null, "Estado já registrada");
-//			}
+			if (dao.adicionarEstado(Estado)) {
+				showMessageDialog(null, "Estado registrada com sucesso");
+			} else {
+				showMessageDialog(null, "Erro ao cadastrar estado");
+			}
 
 		} catch (NumberFormatException e) {
 			showMessageDialog(null, "Opção inválida");
@@ -84,78 +81,56 @@ private static DAO dao = new DAO();
 	}
 
 	private void pesquisarEstado() {
-		long cnpj = parseInt(showInputDialog("CNPJ"));
-
-//		RetornoEstado retorno = armazenamento.pesquisarEstado(cnpj);
-//
-//		if (retorno.isOk()) {
-//			Estado Estado = retorno.getDado();
-//			showMessageDialog(null, Estado.getDados());
-//		} else {
-//			showMessageDialog(null, "Estado não encontrada");
-//		}
+		String uf = showInputDialog("UF do estado");
+		String retornoPesquisa = dao.pesquisarEstado(uf);
+		showMessageDialog(null, retornoPesquisa);
 	}
 
 	private void alterarEstado() {
-		long cnpj = parseInt(showInputDialog("CNPJ a ser alterado (Sem pontuação)"));
-		long cnpjNovo = parseInt(showInputDialog("CNPJ novo (Sem pontuação)"));
-		String nomeNovo = showInputDialog("Nome novo");
-		stringVazia(nomeNovo);
-		String senhaNova = showInputDialog("Senha novo");
-		stringVazia(senhaNova);
+		try {
+			String uf = showInputDialog("UF do estado");
+			String estado = showInputDialog("Novo nome do estado");
+			stringVazia(uf);
+			stringVazia(estado);
+			if (dao.alterarEstado(uf, estado)) {
+				showMessageDialog(null, "Estado alterado com sucesso");
+			} else {
+				showMessageDialog(null, "Estado ocorreu um erro ao alterar o estado");
+			}
 
-//		RetornoEstado retorno = armazenamento.alterarEstado(cnpj, cnpjNovo, nomeNovo, senhaNova);
-//		if (retorno.isOk()) {
-//			showMessageDialog(null, "Estado alterada");
-//		} else {
-//			showMessageDialog(null, "Estado não encontrada");
-//		}
+		} catch (NumberFormatException e) {
+			showMessageDialog(null, "Opção inválida");
+			return;
+		}
 	}
 
 	private void apagarEstado() {
-		long cnpj = parseInt(showInputDialog("CNPJ (Sem pontuação)"));
-
-//		RetornoEstado retorno = armazenamento.apagarEstado(cnpj);
-//
-//		if (retorno.isOk()) {
-//			showMessageDialog(null, "Estado foi apagada");
-//		} else {
-//			showMessageDialog(null, "Estado não foi encontrada");
-//		}
+		try {
+			String uf = showInputDialog("UF do estado");
+			stringVazia(uf);
+			if (dao.apagarEstado(uf)) {
+				showMessageDialog(null, "Estado apagado com sucesso");
+			} else {
+				showMessageDialog(null, "Estado ocorreu um erro ao apagar o estado");
+			}
+		} catch (NumberFormatException e) {
+			showMessageDialog(null, "Opção inválida");
+			return;
+		}
 	}
 
 	private void cadastrarCidade() {
 		try {
-			String nome = showInputDialog("Nome");
+			String nome = showInputDialog("Nome da cidade");
+			String uf = showInputDialog("UF");
 			stringVazia(nome);
-			long cnpj = parseInt(showInputDialog("CNPJ (Sem pontuação)"));
-			String senha = showInputDialog("Senha");
-			stringVazia(senha);
-			String endereco = showInputDialog("Endereco");
-			stringVazia(endereco);
-			String descricao = showInputDialog("Descrição dos alimentos");
-			stringVazia(descricao);
-			double peso = Double.parseDouble(showInputDialog("Peso(kg) dos alimentos"));
-			int statusRetirada = parseInt(showInputDialog("Retirada disponível? (1) Sim  - (2) Não"));
-			boolean statusRetiradaBool;
-
-			if (statusRetirada == 1) {
-				statusRetiradaBool = true;
-			} else if (statusRetirada == 2) {
-				statusRetiradaBool = false;
+			stringVazia(uf);
+			Cidade cidade = new Cidade(nome, uf);
+			if (dao.adicionarCidade(cidade)) {
+				showMessageDialog(null, "Estado registrada com sucesso");
 			} else {
-				throw new NumberFormatException("Opção inválida");
+				showMessageDialog(null, "Erro ao cadastrar estado");
 			}
-
-//			Alimentos alimentos = new Alimentos(descricao, peso);
-//			Cidade restaurante = new Cidade(nome, cnpj, senha, statusRetiradaBool, alimentos, endereco);
-//
-//			if (armazenamento.adicionarCidade(restaurante)) {
-//				showMessageDialog(null, "Cidade registrado com sucesso");
-//			} else {
-//				showMessageDialog(null, "Cidade já registrado");
-//			}
-
 		} catch (NumberFormatException e) {
 			showMessageDialog(null, "Opção inválida");
 			return;
@@ -165,14 +140,6 @@ private static DAO dao = new DAO();
 	private void pesquisarCidade() {
 		long cnpj = parseInt(showInputDialog("CNPJ"));
 
-//		RetornoCidade retorno = armazenamento.pesquisarCidade(cnpj);
-//
-//		if (retorno.isOk()) {
-//			Cidade restaurante = retorno.getDado();
-//			showMessageDialog(null, restaurante.getDados());
-//		} else {
-//			showMessageDialog(null, "Cidade não encontrado");
-//		}
 	}
 
 	private void alterarCidade() {
@@ -198,25 +165,10 @@ private static DAO dao = new DAO();
 			throw new NumberFormatException("Opção inválida");
 		}
 
-//		RetornoCidade retorno = armazenamento.alterarCidade(cnpj, cnpjNovo, nomeNovo, senhaNova, enderecoNovo,
-//				descricaoNovo, pesoNovo, statusRetiradaBoolNovo);
-//		if (retorno.isOk()) {
-//			showMessageDialog(null, "Cidade alterado");
-//		} else {
-//			showMessageDialog(null, "Cidade não encontrado");
-//		}
 	}
 
 	private void apagarCidade() {
 		long cnpj = parseInt(showInputDialog("CNPJ (Sem pontuação)"));
-
-//		RetornoCidade retorno = armazenamento.apagarCidade(cnpj);
-//
-//		if (retorno.isOk()) {
-//			showMessageDialog(null, "Cidade foi apagado");
-//		} else {
-//			showMessageDialog(null, "Cidade não foi encontrado");
-//		}
 	}
 
 	private void stringVazia(String input) {
