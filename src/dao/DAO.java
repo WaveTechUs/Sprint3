@@ -99,7 +99,7 @@ public class DAO {
         boolean retorno = false;
         
         String temEstado = pesquisarEstado(cidade.getFk_estado());
-        if(temEstado.length() == 36) {
+			if(temEstado.length() == 36) {
         	return false;
         }
 
@@ -186,5 +186,74 @@ public class DAO {
 			db.close();
 		}
 		return retorno;
+	}
+
+	public boolean adicionarCliente(String nome, String cpf, int idade, String cidade){
+		boolean retorno = false;
+		String temEstado = pesquisarCidade(cidade);
+		if(temEstado.length() == 39) {
+			return false;
+		}
+		Connection conexao = db.conectar();
+		try {
+			String sqlCidade = "SELECT ID_CIDADE FROM CIDADE WHERE NOME_CIDADE = ? ";
+			PreparedStatement pCidade = conexao.prepareStatement(sqlCidade);
+			pCidade.setString(1, cidade);
+			
+			ResultSet rs = pCidade.executeQuery();
+			int idCidade = 0;
+			while(rs.next()) {
+				idCidade = rs.getInt("ID_CIDADE");
+			}
+			
+			String sql = "INSERT INTO CLIENTE (NOME, CPF, IDADE, ID_CIDADE) VALUES (?,?,?,?)";
+			PreparedStatement p = conexao.prepareStatement(sql);
+			p.setString(1, nome);
+			p.setString(2, cpf);
+			p.setInt(3, idade);
+			p.setInt(4, idCidade);
+			int i = p.executeUpdate();
+			retorno = true;
+		} catch (Exception ex){
+			System.out.println("Adicionar cliente");
+			retorno = false;
+		} finally {
+			db.close();
+		}
+		return retorno;
+	}
+	
+	public String pesquisarCliente(String nome){
+		String retorno = "Nenhum cliente com esse nome registrado";
+		String sql = "SELECT * FROM CLIENTE WHERE NOME = ? ";
+		Connection conexao = db.conectar();
+		try {
+			PreparedStatement p = conexao.prepareStatement(sql);
+			p.setString(1, nome);
+			ResultSet rs = p.executeQuery();
+			String nomeRetorno = "";
+			String cpfRetorno = "";
+			int idadeRetorno = 0;
+			String cidadeRetorno = "";
+			while(rs.next()) {
+				nomeRetorno = rs.getString("NOME");
+				cpfRetorno = rs.getString("CPF");
+				idadeRetorno = rs.getInt("IDADE");
+				cidadeRetorno = rs.getString("ID_CIDADE");
+			}		
+			if(nomeRetorno.length() == 0 || cpfRetorno.length() == 0 || idadeRetorno == 0 || cidadeRetorno.length() == 0){
+				retorno = "Nenhum cliente com esse nome registrado";
+			} else {
+				retorno = nomeRetorno + "\n";
+				retorno += cpfRetorno + "\n";
+				retorno += idadeRetorno + "\n";
+				retorno += cidadeRetorno + "\n";
+			}
+		} catch (Exception ex){
+			retorno = "Ocorreu um erro";
+		} finally {
+			db.close();
+		}
+		return retorno;		
 	}
 }

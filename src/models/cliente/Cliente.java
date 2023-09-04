@@ -8,9 +8,8 @@ public class Cliente {
 	private int idade;
 	private int fkCidade;
 
-	public Cliente(int id, String nome, String cpf, int idade, int fkEndereco) {
+	public Cliente(String nome, String cpf, int idade, int fkEndereco) {
 		super();
-		this.id_cliente = id;
 		this.nome = nome;
 		this.cpf = cpf;
 		this.idade = idade;

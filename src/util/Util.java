@@ -6,11 +6,13 @@ import static javax.swing.JOptionPane.showMessageDialog;
 
 import dao.DAO;
 import models.cidade.Cidade;
+import models.cliente.Cliente;
 import models.estado.Estado;
 
 public class Util {
 //	Armazenamento armazenamento = new Armazenamento();
-private static DAO dao = new DAO();
+	private static DAO dao = new DAO();
+
 	public void menu() {
 		boolean excecao;
 
@@ -30,7 +32,7 @@ private static DAO dao = new DAO();
 
 		do {
 			opcao = parseInt(showInputDialog(gerarMenu()));
-			if (opcao < 1 || opcao > 9) {
+			if (opcao < 1 || opcao > 10) {
 				showMessageDialog(null, "Opção inválida");
 			} else {
 				switch (opcao) {
@@ -55,9 +57,15 @@ private static DAO dao = new DAO();
 				case 7:
 					apagarCidade();
 					break;
+				case 8:
+					cadastrarCliente();
+					break;
+				case 9:
+					pesquisarCliente();
+					break;
 				}
 			}
-		} while (opcao != 9);
+		} while (opcao != 10);
 	}
 
 	private void cadastrarEstado() {
@@ -66,8 +74,8 @@ private static DAO dao = new DAO();
 			String uf = showInputDialog("Uf do estado");
 			stringVazia(estado);
 			stringVazia(uf);
-			
-			Estado Estado = new Estado(uf,estado);
+
+			Estado Estado = new Estado(uf, estado);
 			if (dao.adicionarEstado(Estado)) {
 				showMessageDialog(null, "Estado registrada com sucesso");
 			} else {
@@ -131,7 +139,7 @@ private static DAO dao = new DAO();
 	private void alterarCidade() {
 		try {
 			String nome = showInputDialog("Nome da cidade");
-			String novoNome = showInputDialog("Novo nome da cidae");
+			String novoNome = showInputDialog("Novo nome da cidade");
 			stringVazia(novoNome);
 			stringVazia(nome);
 			if (dao.alterarCidade(nome, novoNome)) {
@@ -160,6 +168,32 @@ private static DAO dao = new DAO();
 		}
 	}
 
+	private void cadastrarCliente() {
+		try {
+			String nome = showInputDialog("Nome do cliente");
+			String cpf = showInputDialog("CPF do cliente");
+			int idade = parseInt(showInputDialog("Idade do cliente"));
+			String cidade = showInputDialog("Cidade do cliente");
+			stringVazia(nome);
+			stringVazia(cpf);
+			stringVazia(cidade);
+			if (dao.adicionarCliente(nome, cpf, idade, cidade)) {
+				showMessageDialog(null, "Cliente cadastrado com sucesso");
+			} else {
+				showMessageDialog(null, "Ocorreu um erro ao cadastrar o cliente");
+			}
+		} catch (NumberFormatException e) {
+			showMessageDialog(null, "Opção inválida");
+			return;
+		}
+	}
+	
+	private void pesquisarCliente(){
+		String nome = showInputDialog("Nome do cliente");
+		String retornoPesquisa = dao.pesquisarCliente(nome);
+		showMessageDialog(null, retornoPesquisa);
+	}
+
 	private void stringVazia(String input) {
 		if (input.length() == 0)
 			throw new NumberFormatException("Opção inválida");
@@ -174,7 +208,9 @@ private static DAO dao = new DAO();
 		aux += "5. Pesquisar cidade\n";
 		aux += "6. Alterar cidade\n";
 		aux += "7. Apagar cidade\n";
-		aux += "8. Encerrar programa\n";
+		aux += "8. Cadastrar cliente\n";
+		aux += "9. Pesquisar cliente\n";
+		aux += "10. Encerrar programa\n";
 		return aux;
 	}
 }
