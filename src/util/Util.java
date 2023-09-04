@@ -10,7 +10,6 @@ import models.cliente.Cliente;
 import models.estado.Estado;
 
 public class Util {
-//	Armazenamento armazenamento = new Armazenamento();
 	private static DAO dao = new DAO();
 
 	public void menu() {

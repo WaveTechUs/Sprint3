@@ -20,7 +20,8 @@ public class DAO {
 			p.setString(1, estado.getUf());
 			p.setString(2, estado.getNomeEstado());
 			int i = p.executeUpdate();
-			retorno = true;
+			if(i > 0)
+			    retorno = true;
 		} catch (Exception ex){
 			retorno = false;
 		} finally {
@@ -66,10 +67,9 @@ public class DAO {
 			p.setString(1, nomeEstado);
 			p.setString(2, uf);
 			int i = p.executeUpdate();
-			retorno = true;
-			if(i == 0) {
-				retorno = false;
-			}
+			if(i > 0)
+			    retorno = true;
+			
 		} catch (Exception ex){
 			retorno = false;
 		} finally {
@@ -85,8 +85,10 @@ public class DAO {
 		try {
 			PreparedStatement p = conexao.prepareStatement(sql);
 			p.setString(1, uf);
-			int i = p.executeUpdate();
 			retorno = true;
+			int i = p.executeUpdate();
+			if (i > 0)
+        		retorno = true;
 		} catch (Exception ex){
 			retorno = false;
 		} finally {
@@ -111,9 +113,9 @@ public class DAO {
         	pCidade.setString(1, cidade.getNome_cidade());
         	pCidade.setString(2, cidade.getFk_estado());
         	int i = pCidade.executeUpdate();
-        	if (i > 0) {
+        	if (i > 0)
         		retorno = true;
-        	}
+        	
         } catch (Exception ex){
         	System.out.println("Erro no adicionar cidade");
         } finally {
@@ -159,10 +161,8 @@ public class DAO {
 			p.setString(1, novoNome);
 			p.setString(2, nome);
 			int i = p.executeUpdate();
-			retorno = true;
-			if(i == 0) {
-				retorno = false;
-			}
+			if(i > 0)
+			    retorno = true;
 		} catch (Exception ex){
 			retorno = false;
 		} finally {
