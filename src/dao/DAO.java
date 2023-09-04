@@ -179,6 +179,7 @@ public class DAO {
 			PreparedStatement p = conexao.prepareStatement(sql);
 			p.setString(1, nome);
 			int i = p.executeUpdate();
+			if(i > 0)
 			retorno = true;
 		} catch (Exception ex){
 			retorno = false;
@@ -213,7 +214,8 @@ public class DAO {
 			p.setInt(3, idade);
 			p.setInt(4, idCidade);
 			int i = p.executeUpdate();
-			retorno = true;
+			if(i > 0)
+				retorno = true;
 		} catch (Exception ex){
 			System.out.println("Adicionar cliente");
 			retorno = false;
@@ -244,10 +246,10 @@ public class DAO {
 			if(nomeRetorno.length() == 0 || cpfRetorno.length() == 0 || idadeRetorno == 0 || cidadeRetorno.length() == 0){
 				retorno = "Nenhum cliente com esse nome registrado";
 			} else {
-				retorno = nomeRetorno + "\n";
-				retorno += cpfRetorno + "\n";
-				retorno += idadeRetorno + "\n";
-				retorno += cidadeRetorno + "\n";
+				retorno = "Nome: " + nomeRetorno + "\n";
+				retorno += "CPF: " + cpfRetorno + "\n";
+				retorno += "Idade: " + idadeRetorno + "\n";
+				retorno += "Cidade:" + cidadeRetorno + "\n";
 			}
 		} catch (Exception ex){
 			retorno = "Ocorreu um erro";

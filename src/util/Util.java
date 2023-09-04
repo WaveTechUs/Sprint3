@@ -6,7 +6,6 @@ import static javax.swing.JOptionPane.showMessageDialog;
 
 import dao.DAO;
 import models.cidade.Cidade;
-import models.cliente.Cliente;
 import models.estado.Estado;
 
 public class Util {
